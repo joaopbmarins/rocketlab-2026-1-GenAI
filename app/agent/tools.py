@@ -7,7 +7,7 @@ from agent import sql_agent
 from db import get_connection
 from utils import get_tabelas_validas
 
-def get_tabelas(conn) -> str:
+def get_tabelas(conn) -> set:
     return get_tabelas_validas(conn)
 
 def validar_sql(sql: str, TABELAS_VALIDAS: set) -> str:
@@ -32,7 +32,7 @@ def validar_sql(sql: str, TABELAS_VALIDAS: set) -> str:
         raise ValueError("Múltiplas queries não permitidas")
 
     tabelas_encontradas = set(
-        re.findall(r"\b(?:FROM|JOIN)\s+\"?([a-zA-Z_]+)\"?", sql, re.IGNORECASE)
+        re.findall(r"\b(?:FROM|JOIN)\s+\"?([a-zA-Z_][a-zA-Z0-9_]*)\"?", sql, re.IGNORECASE)
     )
 
     tabelas_invalidas = tabelas_encontradas - TABELAS_VALIDAS
@@ -51,6 +51,11 @@ def get_table_info(ctx: RunContext[TextToSQLDeps], table_name: str) -> str:
     Use isso para entender o esquema das tabelas relevantes."""
 
     conn = get_connection()
+    tabelas_validas = get_tabelas_validas(conn)
+    if table_name not in tabelas_validas:
+        conn.close()
+        return f"Error: Tabela inválida '{table_name}'. Verifique o esquema e tente novamente."
+
     cursor = conn.cursor()
     cursor.execute("SELECT sql FROM sqlite_master WHERE type='table' AND name=?", (table_name,))
     row = cursor.fetchone()
@@ -69,6 +74,12 @@ def get_distinct_values(ctx: RunContext[TextToSQLDeps], table_name: str, column_
     o que pode ajudar a evitar erros de filtro e JOIN."""
     
     conn = get_connection()
+
+    tabelas_validas = get_tabelas_validas(conn)
+    if table_name not in tabelas_validas:
+        conn.close()
+        return f"Error: Tabela inválida '{table_name}'. Verifique o esquema e tente novamente."
+
     try:
         cursor = conn.cursor()
         cursor.execute(f"SELECT DISTINCT [{column_name}] FROM [{table_name}] LIMIT 20")
