@@ -45,6 +45,19 @@ def validar_sql(sql: str, TABELAS_VALIDAS: set) -> str:
 
     return sql
 
+def analisar_nulls(df: pd.DataFrame) -> str:
+    null_cols = df.columns[df.isnull().any()].tolist()
+    
+    if not null_cols:
+        return ""
+    
+    detalhes = []
+    for col in null_cols:
+        qtd = df[col].isnull().sum()
+        detalhes.append(f"{col} ({qtd} NULLs)")
+    
+    return "Aviso: Colunas com valores NULL detectadas → " + ", ".join(detalhes)
+
 @sql_agent.tool
 def get_table_info(ctx: RunContext[TextToSQLDeps], table_name: str) -> str:
     """Busca a declaração CREATE TABLE e as primeiras 3 linhas de amostra para uma tabela dada.
@@ -84,7 +97,13 @@ def get_distinct_values(ctx: RunContext[TextToSQLDeps], table_name: str, column_
         cursor = conn.cursor()
         cursor.execute(f"SELECT DISTINCT [{column_name}] FROM [{table_name}] LIMIT 20")
         values = [str(row[0]) for row in cursor.fetchall()]
-        return f"Valores distintos em {table_name}.{column_name}: {values}"
+        return (
+                f"Valores distintos para {table_name}.{column_name}:\n"
+                f"{values}\n\n"
+                "IMPORTANTE:\n"
+                "- Use APENAS esses valores na query\n"
+                "- NÃO assuma valores como 'true', 'false', 'yes', 'no'\n"
+            )
     except Exception as e:
         return f"Error: {e}"
     finally:
@@ -106,7 +125,13 @@ def execute_query(ctx: RunContext[TextToSQLDeps], sql_query: str) -> str:
         df = pd.read_sql_query(sql_query, conn)
         if df.empty:
             return "Query retornou 0 linhas. Pode ser correto (resultado vazio) ou ter um erro lógico."
-        return f"Query returnou {len(df)} linhas:\n{df.to_string(index=False)}"
+
+        aviso_null = analisar_nulls(df)
+        response = f"Query retornou {len(df)} linhas:\n{df.to_string(index=False)}"
+
+        if aviso_null:
+            response = aviso_null + "\n\n" + response
+        return response
     except Exception as e:
         return f"SQL Error: {e}. Conserte a query e tente novamente."
     finally:

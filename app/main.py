@@ -5,7 +5,9 @@ app = FastAPI()
 
 @app.get("/query")
 def query(q: str):
-    return run_sql_agent(q)
+    response = run_sql_agent(q)
+    print("Resposta do agente:", response)
+    return response
 
 @app.get("/health")
 def health():
