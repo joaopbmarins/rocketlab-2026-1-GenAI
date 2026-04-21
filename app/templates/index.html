@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query Interface</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Query Interface</h1>
+        
+        <div class="search-box">
+            <input 
+                type="text" 
+                id="queryInput" 
+                placeholder="Digite sua consulta aqui..." 
+                autocomplete="off"
+            >
+            <button id="searchBtn" onclick="performSearch()">Buscar</button>
+        </div>
+
+        <div class="loading" id="loading">Processando consulta</div>
+
+        <div class="response-section">
+            <h2>Resposta</h2>
+            <div class="tabs" id="tabsContainer" style="display: none;">
+                <button class="tab-btn active" onclick="switchTab('reasoning')">💭 Reasoning</button>
+                <button class="tab-btn" onclick="switchTab('sql')">💾 SQL</button>
+                <button class="tab-btn" onclick="switchTab('confidence')">✓ Confiança</button>
+            </div>
+
+            <div class="response-container active" id="reasoning-tab">
+                <div class="response-box">
+                    <pre id="reasoningText"></pre>
+                </div>
+            </div>
+
+            <div class="response-container" id="sql-tab">
+                <div class="response-box">
+                    <pre><code class="language-sql" id="sqlText"></code></pre>
+                </div>
+            </div>
+
+            <div class="response-container" id="confidence-tab">
+                <div class="response-box">
+                    <div id="confidenceContent"></div>
+                </div>
+            </div>
+
+            <div class="error" id="errorBox">
+                <p id="errorText"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="/static/script.js"></script>
+</body>
+</html>
