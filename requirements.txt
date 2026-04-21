@@ -1,0 +1,7 @@
+﻿fastapi==0.136.0
+uvicorn==0.44.0
+pydantic==2.13.2
+pydantic-ai-slim[google]==1.84.1
+python-dotenv==1.1.0
+pandas==2.2.3
+SQLAlchemy==2.0.39
