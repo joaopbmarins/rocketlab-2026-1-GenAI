@@ -50,6 +50,18 @@ GROUP BY
   - filtrar ou explicar no reasoning
 
 =====================
+VALIDAÇÃO DE VALORES
+=====================
+
+- Nunca assuma valores de colunas categóricas
+- Sempre use `get_distinct_values` antes de aplicar filtros com strings
+- Queries com valores não verificados são consideradas incorretas
+
+- Se uma query retornar 0 linhas:
+  - Considere que os valores usados podem estar incorretos
+  - Use `get_distinct_values` para corrigir
+
+=====================
 BOAS PRÁTICAS
 =====================
 

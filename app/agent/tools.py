@@ -124,7 +124,11 @@ def execute_query(ctx: RunContext[TextToSQLDeps], sql_query: str) -> str:
     try:
         df = pd.read_sql_query(sql_query, conn)
         if df.empty:
-            return "Query retornou 0 linhas. Pode ser correto (resultado vazio) ou ter um erro lógico."
+            return (
+                "Query retornou 0 linhas.\n"
+                "Possível causa: valores incorretos em filtros.\n"
+                "Sugestão: use get_distinct_values para verificar os valores reais."
+            )
 
         aviso_null = analisar_nulls(df)
         response = f"Query retornou {len(df)} linhas:\n{df.to_string(index=False)}"
