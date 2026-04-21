@@ -1,14 +1,14 @@
-# 🔍 Query Interface - GenAI SQL Agent
+# Query Interface - GenAI TextToSQL Agent
 
 Interface web para gerar queries SQL automáticamente usando inteligência artificial. O programa utiliza um agente de IA para converter perguntas em linguagem natural para SQL estruturado.
 
-## 📋 Pré-requisitos
+## Pré-requisitos
 
 - Python 3.8+
 - pip ou conda
 - API Key do Google (Gemini)
 
-## 🔧 Instalação
+## Instalação
 
 ### 1. Clone o repositório
 ```bash
@@ -27,7 +27,7 @@ GOOGLE_API_KEY=sua_chave_api_aqui
 pip install -r requirements.txt
 ```
 
-## ▶️ Como Usar
+## Como Usar
 
 ### Inicie o servidor
 
@@ -48,7 +48,7 @@ O servidor estará disponível em: `http://localhost:8000`
    - **💾 SQL**: Query SQL gerada com syntax highlighting
    - **✓ Confiança**: Nível de confiança da resposta
 
-## 📊 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 rocketlab-2026-1-GenAI/
@@ -70,7 +70,7 @@ rocketlab-2026-1-GenAI/
 └── README.md              # Este arquivo
 ```
 
-## 🔌 Endpoints da API
+##  Endpoints da API
 
 ### GET `/`
 Retorna a página HTML principal.
@@ -90,49 +90,16 @@ Executa uma consulta via agente de IA.
 }
 ```
 
-### GET `/health`
-Verificar status do servidor.
-
-**Resposta:**
-```json
-{
-  "status": "ok"
-}
-```
-
-## 🎨 Interface do Usuário
-
-A interface inclui:
-- Barra de busca com botão "Buscar"
-- Indicador de carregamento
-- Três abas para visualizar resultados
-- Badges coloridas para nível de confiança
-- Tratamento de erros com mensagens claras
-
-## ⚙️ Configuração
+## Configuração
 
 ### Variáveis de Ambiente (.env)
 
 ```
 GOOGLE_API_KEY=sua_chave_aqui
-# Adicione outras variáveis conforme necessário
 ```
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Erro: "API Key não encontrada"
 - Verifique se o arquivo `.env` existe
 - Confirme que a chave está correta em `GOOGLE_API_KEY`
-
-### Erro: "Arquivo estático não encontrado (404)"
-- Reinicie o servidor
-- Verifique se os arquivos em `app/templates/` existem
-
-### SQL não aparece colorido
-- Verifique o console do navegador (F12) para erros
-- Recarregue a página
-
-## 📝 Notas de Desenvolvimento
-
-- O agente utiliza o modelo `gemini-2.5-flash-lite`
-- A confiança é determinada pela validação do agente
